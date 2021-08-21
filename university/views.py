@@ -66,9 +66,9 @@ def forgot_password(request):
       data = json.loads(request.body)
       print(data)
       # check if user exists
-      user_object = Users.objects.filter(email_id = data['username'],is_deleted =False )
-      user_auth_obj = User.objects.filter(username = data['username'],is_deleted =False)
-      if not user_object and user_object.count < 0 and not user_auth_obj and user_auth_obj.count < 0 :
+      user_object = Users.objects.filter(email_id = data['username'],is_deleted =False ).first()
+      user_auth_obj = User.objects.filter(username = data['username']).first()
+      if not user_object and len(user_object) < 0 and not user_auth_obj and len(user_auth_obj) < 0 :
          return_object={
             "status":500,
             "message":"User does not exists"
@@ -77,8 +77,10 @@ def forgot_password(request):
       
       #changing password from user input
       password = make_password(data['new_password'])
-      user_object = user_object.first().password = password
-      user_auth_obj = user_auth_obj.first().password = password
+      user_object.password = password
+      user_auth_obj.password = password
+      user_auth_obj.save()
+      user_object.save()
       return_object={
             "status":200,
             "message":"Password Changed Successfully",
@@ -89,7 +91,7 @@ def forgot_password(request):
       return_object={
             "status":500,
             "message":"Error resetting password",
-            "error":error
+            "error":str(error)
          }
    return JsonResponse(return_object, safe = False)
 
@@ -119,8 +121,10 @@ def list_user(request):
          }
          return JsonResponse(return_object, safe = False)
       user_list = fetch_user_data(data,user_obj)
-      results = list(user_list.values('id','user_id','user_role','first_name','last_name','email_id','is_deleted','created_at'))  
-
+      if user_list :
+         results = list(user_list.values('id','user_id','user_role','first_name','last_name','email_id','is_deleted','created_at'))  
+      else:
+         results = []
       return_object={
             "status":200,
             "message":"Successfully Retrived",
@@ -213,6 +217,7 @@ def check_authorization_for_adding_user(user_auth_obj,data):
    else :
       return {"status":"fail","message":"user role is not present or invalid"}        
 
+
 # Function to fetch user data based on user role
 def fetch_user_data(data,user_obj):
    try:
@@ -280,5 +285,5 @@ def map_user_data(user_obj,data):
       
       return {"user_id":user_id,"username":email_id,"password":data['password']}
    except (Exception) as error:
-      print("fetch_user_data : ",error)
+      print("map_user_data : ",error)
       return error

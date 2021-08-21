@@ -1,1 +1,4 @@
 djangorestframework_simplejwt
+Django
+psycopg2-binary
+djangorestframework
