@@ -12,9 +12,12 @@ User Roles :
 - teacher
 - student
 
+Postman collection link :
+- https://www.getpostman.com/collections/6b24c1873b10bac60799
+
 API Endpoints :
-- api/login/                            # Retrives JWT token for a user
-- api/university/signup/                # Registers admin
-- api/university/list-user/             # List the users present in database (requires  JWT token)
-- api/university/create-user/           # add user into the database (requires JWT token)
-- api/university/forgot-password/       # reset password 
+- api/login/                            ## Retrives JWT token for a user
+- api/university/signup/                ## Registers admin
+- api/university/list-user/             ## List the users present in database (requires  JWT token)
+- api/university/create-user/           ## add user into the database (requires JWT token)
+- api/university/forgot-password/       ## reset password 
